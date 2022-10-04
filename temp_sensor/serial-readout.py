@@ -19,6 +19,6 @@ f = open(filename, "a")
 while True:
     s    = ser.readline()
     line = s.decode('utf-8')
-    print(line)
+    print(line[:-2])
     f.write(line)    # Appends output to file
     time.sleep(.1)
