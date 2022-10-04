@@ -22,9 +22,6 @@ Adafruit_MAX31865 thermo_sensors[3] = {
     Adafruit_MAX31865(4, 5, 6, 13)
   };
 // Use software SPI: CS, DI, DO, CLK
-// thermo_sensors[0] = Adafruit_MAX31865(10, 11, 12, 13);
-// thermo_sensors[1] = Adafruit_MAX31865(7, 8, 9, 13);
-// thermo_sensors[2] = Adafruit_MAX31865(3, 4, 5, 13);
 // use hardware SPI, just pass in the CS pin
 //Adafruit_MAX31865 thermo1 = Adafruit_MAX31865(10);
 
