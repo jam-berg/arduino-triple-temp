@@ -95,12 +95,13 @@ void loop() {
 }
 
 void createCsvLine(float threeValues[]) {
-    int k = 0;
+  String measureString = "";
+  int k = 0;
   for (int j = 0; j < 3; j++) {
-    Serial.print(threeValues[j]);
+    measureString += threeValues[j];
     if (k++ < 2) {
-       Serial.print(";");
+       measureString += ";";
     }
   }
-  Serial.println();
+  Serial.println(measureString);
 }
