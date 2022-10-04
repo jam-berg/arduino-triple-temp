@@ -33,7 +33,7 @@ Adafruit_MAX31865 thermo_sensors[3] = {
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("Adafruit MAX31865 PT100 Sensor Test!");
+  //Serial.println("Adafruit MAX31865 PT100 Sensor Test!");
 
   for (int i = 0; i < 3; i++) {
     thermo_sensors[i].begin(MAX31865_4WIRE);  // set to 2WIRE or 4WIRE as necessary
@@ -44,18 +44,19 @@ void setup() {
 
 
 void loop() {
-  
+  float thermo_sensor_values[3];
   for (int i = 0; i < 3; i++) { 
     uint16_t rtd = thermo_sensors[i].readRTD();
-    Serial.print("Sensor Number: "); Serial.println(i);
+    //Serial.print("Sensor Number: "); Serial.println(i);
 
-    Serial.print("RTD value: "); Serial.println(rtd);
+    //Serial.print("RTD value: "); Serial.println(rtd);
     float ratio = rtd;
     ratio /= 32768;
-    Serial.print("Ratio = "); Serial.println(ratio,8);
-    Serial.print("Resistance = "); Serial.println(RREF*ratio,8);
-    Serial.print("Temperature = "); Serial.println(thermo_sensors[i].temperature(RNOMINAL, RREF));
-  
+    //Serial.print("Ratio = "); Serial.println(ratio,8);
+    //Serial.print("Resistance = "); Serial.println(RREF*ratio,8);
+    //Serial.print("Temperature = "); Serial.println(thermo_sensors[i].temperature(RNOMINAL, RREF));
+    thermo_sensor_values[i] = thermo_sensors[i].temperature(RNOMINAL, RREF);
+    
     // Check and print any faults
     uint8_t fault = thermo_sensors[i].readFault();
     if (fault) {
@@ -80,9 +81,18 @@ void loop() {
       }
       thermo_sensors[i].clearFault();
     }
-    Serial.println();
+  }
+  createCsvLine(thermo_sensor_values);
+  delay(1000);
+}
+
+void createCsvLine(float threeValues[]) {
+    int k = 0;
+  for (int j = 0; j < 3; j++) {
+    Serial.print(threeValues[j]);
+    if (k++ < 2) {
+       Serial.print(";");
+    }
   }
   Serial.println();
-  Serial.println();
-  delay(1000);
 }
