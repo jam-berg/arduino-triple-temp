@@ -39,11 +39,12 @@ void setup() {
     thermo_sensors[i].begin(MAX31865_4WIRE);  // set to 2WIRE or 4WIRE as necessary
   }
   pinMode(2, OUTPUT);
-  digitalWrite (2, HIGH);
+  digitalWrite (2, LOW);
 }
 
 
 void loop() {
+  delay(1000);
   float thermo_sensor_values[3];
   for (int i = 0; i < 3; i++) { 
     uint16_t rtd = thermo_sensors[i].readRTD();
@@ -83,7 +84,14 @@ void loop() {
     }
   }
   createCsvLine(thermo_sensor_values);
-  delay(1000);
+
+  // heating reversed with relais
+  if (thermo_sensor_values[0] > 35) {
+    digitalWrite(2, HIGH);
+  }
+  if (thermo_sensor_values[0] < 25) {
+    digitalWrite(2, LOW);
+  }
 }
 
 void createCsvLine(float threeValues[]) {
