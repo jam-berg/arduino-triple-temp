@@ -41,10 +41,13 @@ void setup() {
   for (int i = 0; i < 3; i++) {
     thermo_sensors[i].begin(MAX31865_4WIRE);  // set to 2WIRE or 4WIRE as necessary
   }
+  pinMode(2, OUTPUT);
+  digitalWrite (2, HIGH);
 }
 
 
 void loop() {
+  
   for (int i = 0; i < 3; i++) { 
     uint16_t rtd = thermo_sensors[i].readRTD();
     Serial.print("Sensor Number: "); Serial.println(i);
