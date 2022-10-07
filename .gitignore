@@ -33,3 +33,7 @@
 
 # Custom
 data_file_*.txt
+
+# IDE
+.idea/*
+.vscode/*
