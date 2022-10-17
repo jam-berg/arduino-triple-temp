@@ -30,6 +30,13 @@ Adafruit_MAX31865 thermo_sensors[3] = {
 // The 'nominal' 0-degrees-C resistance of the sensor
 // 100.0 for PT100, 1000.0 for PT1000
 #define RNOMINAL  100.0
+#define PI 3.1415926535897932384626433832795
+
+// config values
+#define CYCLE_WIDTH 5
+#define CYCLE_LENGTH 200
+#define BASE_TEMPERATURE 30
+int unsigned steps = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -44,7 +51,7 @@ void setup() {
 
 
 void loop() {
-  delay(1000);
+  delay(CYCLE_LENGTH);
   float thermo_sensor_values[3];
   for (int i = 0; i < 3; i++) { 
     uint16_t rtd = thermo_sensors[i].readRTD();
@@ -86,12 +93,22 @@ void loop() {
   createCsvLine(thermo_sensor_values);
 
   // heating reversed with relais
-  if (thermo_sensor_values[0] > 35) {
+  // if (thermo_sensor_values[0] > 35) {
+  //   digitalWrite(2, HIGH);
+  // }
+  // if (thermo_sensor_values[0] < 25) {
+  //   digitalWrite(2, LOW);
+
+  // heat if thermo_sensor_values[0] is smaller than sin
+  float sinValue = CYCLE_WIDTH*sin((steps/CYCLE_LENGTH)*2*PI)+BASE_TEMPERATURE
+  if (thermo_sensor_values[0] > sinValue) {
     digitalWrite(2, HIGH);
   }
-  if (thermo_sensor_values[0] < 25) {
+  if (thermo_sensor_values[0] < sinValue) {
     digitalWrite(2, LOW);
+  
   }
+  steps++;
 }
 
 void createCsvLine(float threeValues[]) {
