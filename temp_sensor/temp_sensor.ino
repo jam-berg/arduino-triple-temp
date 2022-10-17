@@ -100,7 +100,7 @@ void loop() {
   //   digitalWrite(2, LOW);
 
   // heat if thermo_sensor_values[0] is smaller than sin
-  float sinValue = CYCLE_WIDTH*sin((steps/CYCLE_LENGTH)*2*PI)+BASE_TEMPERATURE
+  float sinValue = CYCLE_WIDTH*sin((steps/CYCLE_LENGTH)*2*PI)+BASE_TEMPERATURE;
   if (thermo_sensor_values[0] > sinValue) {
     digitalWrite(2, HIGH);
   }
