@@ -34,9 +34,11 @@ Adafruit_MAX31865 thermo_sensors[3] = {
 
 // config values
 #define CYCLE_WIDTH 5
-#define CYCLE_LENGTH 200
+#define CYCLE_LENGTH 10
 #define BASE_TEMPERATURE 30
+#define DELAY 10
 int unsigned steps = 0;
+String output_string_cycle = "";
 
 void setup() {
   Serial.begin(9600);
@@ -51,7 +53,6 @@ void setup() {
 
 
 void loop() {
-  delay(CYCLE_LENGTH);
   float thermo_sensor_values[3];
   for (int i = 0; i < 3; i++) { 
     uint16_t rtd = thermo_sensors[i].readRTD();
@@ -90,8 +91,12 @@ void loop() {
       thermo_sensors[i].clearFault();
     }
   }
-  createCsvLine(thermo_sensor_values);
-
+  output_string_cycle += createCsvLine(thermo_sensor_values);
+  if (steps%CYCLE_LENGTH == 0) {
+    Serial.print(output_string_cycle);
+    output_string_cycle = "";
+  }
+  
   // heating reversed with relais
   // if (thermo_sensor_values[0] > 35) {
   //   digitalWrite(2, HIGH);
@@ -109,16 +114,15 @@ void loop() {
   
   }
   steps++;
+  delay(DELAY);
 }
 
-void createCsvLine(float threeValues[]) {
+String createCsvLine(float threeValues[]) {
   String measureString = "";
-  int k = 0;
   for (int j = 0; j < 3; j++) {
     measureString += threeValues[j];
-    if (k++ < 2) {
-       measureString += ";";
-    }
+    measureString += ";";
   }
-  Serial.println(measureString);
+  measureString += String(millis()) + "\r\n";
+  return measureString;
 }
