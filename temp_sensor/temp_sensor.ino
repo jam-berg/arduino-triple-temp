@@ -37,13 +37,12 @@ Adafruit_MAX31865 thermo_sensors[3] = {
 #define CYCLE_LENGTH 10
 #define BASE_TEMPERATURE 30
 #define DELAY 10
+float thermo_sensor_values[3];
 int unsigned steps = 0;
 String output_string_cycle = "";
 
 void setup() {
   Serial.begin(9600);
-  //Serial.println("Adafruit MAX31865 PT100 Sensor Test!");
-
   for (int i = 0; i < 3; i++) {
     thermo_sensors[i].begin(MAX31865_4WIRE);  // set to 2WIRE or 4WIRE as necessary
   }
@@ -53,57 +52,16 @@ void setup() {
 
 
 void loop() {
-  float thermo_sensor_values[3];
   for (int i = 0; i < 3; i++) { 
-    uint16_t rtd = thermo_sensors[i].readRTD();
-    //Serial.print("Sensor Number: "); Serial.println(i);
-
-    //Serial.print("RTD value: "); Serial.println(rtd);
-    float ratio = rtd;
-    ratio /= 32768;
-    //Serial.print("Ratio = "); Serial.println(ratio,8);
-    //Serial.print("Resistance = "); Serial.println(RREF*ratio,8);
-    //Serial.print("Temperature = "); Serial.println(thermo_sensors[i].temperature(RNOMINAL, RREF));
     thermo_sensor_values[i] = thermo_sensors[i].temperature(RNOMINAL, RREF);
-    
-    // Check and print any faults
-    uint8_t fault = thermo_sensors[i].readFault();
-    if (fault) {
-      Serial.print("Fault 0x"); Serial.println(fault, HEX);
-      if (fault & MAX31865_FAULT_HIGHTHRESH) {
-        Serial.println("RTD High Threshold"); 
-      }
-      if (fault & MAX31865_FAULT_LOWTHRESH) {
-        Serial.println("RTD Low Threshold"); 
-      }
-      if (fault & MAX31865_FAULT_REFINLOW) {
-        Serial.println("REFIN- > 0.85 x Bias"); 
-      }
-      if (fault & MAX31865_FAULT_REFINHIGH) {
-        Serial.println("REFIN- < 0.85 x Bias - FORCE- open"); 
-      }
-      if (fault & MAX31865_FAULT_RTDINLOW) {
-        Serial.println("RTDIN- < 0.85 x Bias - FORCE- open"); 
-      }
-      if (fault & MAX31865_FAULT_OVUV) {
-        Serial.println("Under/Over voltage"); 
-      }
-      thermo_sensors[i].clearFault();
-    }
   }
   output_string_cycle += createCsvLine(thermo_sensor_values);
   if (steps%CYCLE_LENGTH == 0) {
     Serial.print(output_string_cycle);
     output_string_cycle = "";
   }
-  
-  // heating reversed with relais
-  // if (thermo_sensor_values[0] > 35) {
-  //   digitalWrite(2, HIGH);
-  // }
-  // if (thermo_sensor_values[0] < 25) {
-  //   digitalWrite(2, LOW);
-
+    
+  // heating reversed: HIGH cools, LOW heats
   // heat if thermo_sensor_values[0] is smaller than sin
   float sinValue = CYCLE_WIDTH*sin((steps/CYCLE_LENGTH)*2*PI)+BASE_TEMPERATURE;
   if (thermo_sensor_values[0] > sinValue) {
@@ -111,7 +69,6 @@ void loop() {
   }
   if (thermo_sensor_values[0] < sinValue) {
     digitalWrite(2, LOW);
-  
   }
   steps++;
   delay(DELAY);
