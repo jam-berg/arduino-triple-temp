@@ -30,13 +30,12 @@ Adafruit_MAX31865 thermo_sensors[3] = {
 // The 'nominal' 0-degrees-C resistance of the sensor
 // 100.0 for PT100, 1000.0 for PT1000
 #define RNOMINAL  100.0
-#define PI 3.1415926535897932384626433832795
 
 // config values
 #define CYCLE_WIDTH 5
-#define CYCLE_LENGTH 10
+#define CYCLE_LENGTH 80
 #define BASE_TEMPERATURE 30
-#define DELAY 10
+//#define DELAY 0
 float thermo_sensor_values[3];
 int unsigned steps = 0;
 String output_string_cycle = "";
@@ -71,15 +70,13 @@ void loop() {
     digitalWrite(2, LOW);
   }
   steps++;
-  delay(DELAY);
+  //delay(DELAY);
 }
 
 String createCsvLine(float threeValues[]) {
   String measureString = "";
   for (int j = 0; j < 3; j++) {
-    measureString += threeValues[j];
-    measureString += ";";
+    measureString += String(threeValues[j]) + ";";
   }
-  measureString += String(millis()) + "\r\n";
-  return measureString;
+  return measureString + String(millis()) + "\r\n";
 }
