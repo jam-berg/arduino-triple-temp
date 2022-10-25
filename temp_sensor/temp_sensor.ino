@@ -54,11 +54,7 @@ void loop() {
   for (int i = 0; i < 3; i++) { 
     thermo_sensor_values[i] = thermo_sensors[i].temperature(RNOMINAL, RREF);
   }
-  output_string_cycle += createCsvLine(thermo_sensor_values);
-  if (steps%CYCLE_LENGTH == 0) {
-    Serial.print(output_string_cycle);
-    output_string_cycle = "";
-  }
+  Serial.print(createCsvLine(thermo_sensor_values));
     
   // heating reversed: HIGH cools, LOW heats
   // heat if thermo_sensor_values[0] is smaller than sin
