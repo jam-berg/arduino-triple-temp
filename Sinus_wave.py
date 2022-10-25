@@ -15,11 +15,10 @@ for i in range(measurement_points):
 print(sinus)
 #Nur für Plot
 
-#plt.plot(sinus)
-#plt.ylabel('Temperratur [°C]')
-#plt.xlabel('10tel Sekunden')
-#plt.show()
-
+plt.plot(sinus)
+plt.ylabel('Temperratur [°C]')
+plt.xlabel('10tel Sekunden')
+plt.show()
 
 
 # Das müsste man noch für C++ anpassen. 
