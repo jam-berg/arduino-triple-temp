@@ -83,7 +83,7 @@ for u in range(0, anzahlcycles):
     y_distance_to_0 = daten[liste[2 * u + 1]][y_distance_index]
     print(X0)
     print(Y0)
-    print(y_distance_to_0)
+    print(Y0 - y_distance_to_0)
 
     plt.plot(daten[liste[2 * u]], daten[liste[2 * u + 1]], marker="x", linestyle=" ")
 
