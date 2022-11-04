@@ -32,9 +32,9 @@ Adafruit_MAX31865 thermo_sensors[3] = {
 #define RNOMINAL  100.0
 
 // config values
-#define CYCLE_WIDTH 5
+#define CYCLE_WIDTH 10
 // CYCLE_LENGTH * 250ms(Arduino runtime) = Cycle duration
-#define CYCLE_LENGTH 50
+#define CYCLE_LENGTH 180
 #define BASE_TEMPERATURE 30
 //#define DELAY 0
 float thermo_sensor_values[3];
@@ -56,7 +56,7 @@ void loop() {
     thermo_sensor_values[i] = thermo_sensors[i].temperature(RNOMINAL, RREF);
   }
   float sinValue = CYCLE_WIDTH*sin((steps/CYCLE_LENGTH)*2*PI) + BASE_TEMPERATURE;
-  Serial.println(createCsvLine(thermo_sensor_values) + ";" + String(sinValue));
+  Serial.println(createCsvLine(thermo_sensor_values) );
     
   // heating reversed: HIGH cools, LOW heats
   // heat if thermo_sensor_values[0] is smaller than sin
@@ -73,7 +73,7 @@ void loop() {
 String createCsvLine(float threeValues[]) {
   String measureString = "";
   for (int j = 0; j < 3; j++) {
-    measureString += String(threeValues[j]) + ";";
+    measureString +=";" + String(threeValues[j]) ;
   }
-  return measureString + String(millis());
+  return measureString ;
 }
